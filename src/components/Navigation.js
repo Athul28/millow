@@ -1,44 +1,54 @@
-import { ethers } from 'ethers';
-import logo from '../assets/logo.svg';
+import { ethers } from "ethers";
+import logo from "../assets/logo.svg";
 
-const Navigation = ({ account, setAccount }) => {
-    const connectHandler = async () => {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = ethers.utils.getAddress(accounts[0])
-        setAccount(account);
-    }
+const Navigation = ({ account, setAccount, balance }) => {
+  //   const [balance, setBalance] = useState(0);
+  const connectHandler = async () => {
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const account = ethers.utils.getAddress(accounts[0]);
+    setAccount(account);
 
-    return (
-        <nav>
-            <ul className='nav__links'>
-                <li><a href="#">Buy</a></li>
-                <li><a href="#">Rent</a></li>
-                <li><a href="#">Sell</a></li>
-            </ul>
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const balance = await provider.getBalance(account);
+    const formattedBalance = ethers.utils.formatEther(balance);
+    // setBalance(Number(formattedBalance) + 100);
+  };
 
-            <div className='nav__brand'>
-                <img src={logo} alt="Logo" />
-                <h1>Millow</h1>
-            </div>
+  return (
+    <nav>
+      <ul className="nav__links">
+        {/* <li>
+          <a href="#">Buy</a>
+        </li>
+        <li>
+          <a href="#">Rent</a>
+        </li>
+        <li>
+          <a href="#">Sell</a>
+        </li> */}
+      </ul>
 
-            {account ? (
-                <button
-                    type="button"
-                    className='nav__connect'
-                >
-                    {account.slice(0, 6) + '...' + account.slice(38, 42)}
-                </button>
-            ) : (
-                <button
-                    type="button"
-                    className='nav__connect'
-                    onClick={connectHandler}
-                >
-                    Connect
-                </button>
-            )}
-        </nav>
-    );
-}
+      <div className="nav__brand">
+        <img src={logo} alt="Logo" />
+        <h1>Millow</h1>
+      </div>
+
+      {account ? (
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <p>Balance: {balance} ETH</p>
+          <button type="button" className="nav__connect">
+            {account.slice(0, 6) + "..." + account.slice(38, 42)}
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="nav__connect" onClick={connectHandler}>
+          Connect
+        </button>
+      )}
+    </nav>
+  );
+};
 
 export default Navigation;
