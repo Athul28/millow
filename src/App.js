@@ -157,7 +157,7 @@ function App() {
   useEffect(() => {
     const storedBalance = localStorage.getItem("balance");
     if (!storedBalance) {
-      localStorage.setItem("balance", balance);
+      localStorage.setItem("balance", 100);
     } else {
       setBalance(parseFloat(storedBalance));
     }
